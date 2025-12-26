@@ -21,19 +21,25 @@ def gemm_c_wrapper(A, B):
     assert K == K2
     
     # 写入输入文件
-    with open('/tmp/gemm_input.txt', 'w') as f:
+    input_file = '/tmp/gemm_input.txt'
+    with open(input_file, 'w') as f:
         f.write(f"{M} {K} {N}\n")
-        for row in A:
-            f.write(' '.join(map(str, row)) + '\n')
-        for row in B:
-            f.write(' '.join(map(str, row)) + '\n')
+        for i in range(M):
+            for j in range(K):
+                f.write(f"{A[i,j]} ")
+            f.write('\n')
+        for i in range(K):
+            for j in range(N):
+                f.write(f"{B[i,j]} ")
+            f.write('\n')
     
     # 调用 C 程序
     result = subprocess.run(
-        ['./c_model/gemm_cli'],
+        ['./c_model/gemm_cli', input_file],
         capture_output=True,
         text=True,
-        cwd='.'
+        cwd='.',
+        timeout=5  # 添加超时保护
     )
     
     if result.returncode != 0:

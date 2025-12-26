@@ -2,12 +2,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main() {
-    int M, K, N;
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        fprintf(stderr, "用法: %s <输入文件>\n", argv[0]);
+        return 1;
+    }
     
-    // 从标准输入读取维度
-    if (scanf("%d %d %d", &M, &K, &N) != 3) {
-        fprintf(stderr, "输入格式错误\n");
+    FILE *fp = fopen(argv[1], "r");
+    if (!fp) {
+        fprintf(stderr, "无法打开文件: %s\n", argv[1]);
+        return 1;
+    }
+    
+    int M, K, N;
+    if (fscanf(fp, "%d %d %d", &M, &K, &N) != 3) {
+        fprintf(stderr, "读取维度失败\n");
+        fclose(fp);
         return 1;
     }
     
@@ -18,14 +28,16 @@ int main() {
     
     if (!A || !B || !C) {
         fprintf(stderr, "内存分配失败\n");
+        fclose(fp);
         return 1;
     }
     
     // 读取矩阵 A
     for (int i = 0; i < M * K; i++) {
         int val;
-        if (scanf("%d", &val) != 1) {
+        if (fscanf(fp, "%d", &val) != 1) {
             fprintf(stderr, "读取 A 失败\n");
+            fclose(fp);
             return 1;
         }
         A[i] = (data_t)val;
@@ -34,17 +46,20 @@ int main() {
     // 读取矩阵 B
     for (int i = 0; i < K * N; i++) {
         int val;
-        if (scanf("%d", &val) != 1) {
+        if (fscanf(fp, "%d", &val) != 1) {
             fprintf(stderr, "读取 B 失败\n");
+            fclose(fp);
             return 1;
         }
         B[i] = (data_t)val;
     }
     
+    fclose(fp);
+    
     // 计算 GEMM
     gemm_int8(A, B, C, M, K, N);
     
-    // 输出结果（只输出数值，便于 Python 解析）
+    // 输出结果到标准输出
     for (int i = 0; i < M; i++) {
         for (int j = 0; j < N; j++) {
             printf("%d", C[i * N + j]);
