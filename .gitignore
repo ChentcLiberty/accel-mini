@@ -29,3 +29,4 @@ sw/c_model/*.o
 sw/c_model/test_tile
 sw/c_model/test_gemm
 sw/c_model/gemm_cli
+sw/c_model/test_cycle
