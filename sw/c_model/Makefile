@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -O2 -std=c99
 
-TARGETS = test_gemm gemm_cli
+TARGETS = test_gemm gemm_cli test_tile
 COMMON_SRCS = gemm.c
 
 all: $(TARGETS)
@@ -22,4 +22,7 @@ run: test_gemm
 	./test_gemm
 
 .PHONY: all clean run
+
+test_tile: test_tile.o gemm.o gemm_tile.o
+		$(CC) $(CFLAGS) -o $@ $^
 
