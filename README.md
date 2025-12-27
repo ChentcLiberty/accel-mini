@@ -5,7 +5,6 @@
 ## 🎯 项目目标
 
 C[8×8] = A[8×8] × B[8×8] (INT8 输入，INT32 输出)
-
 ## 📊 项目进度
 
 ### Level 1: 算法理解 ✅ 完成
@@ -24,7 +23,7 @@ C[8×8] = A[8×8] × B[8×8] (INT8 输入，INT32 输出)
 |------|------|------|------|
 | 2.1 | PE（处理单元） | ✅ | INT8 MAC，32-bit 累加 |
 | 2.2 | PE Array（8×8） | ✅ | 64 个 PE 并行计算 |
-| 2.3 | GEMM 控制器 | ⏳ | FSM 状态机 |
+| 2.3 | GEMM 控制器 | ✅ | FSM 状态机 |
 | 2.4 | 存储接口 | ⏸️ | - |
 | 2.5 | 顶层集成 | ⏸️ | - |
 
@@ -32,6 +31,8 @@ C[8×8] = A[8×8] × B[8×8] (INT8 输入，INT32 输出)
 
 ## 🏗️ 架构设计
 
+markdown
+复制代码
           ┌─────────────────────────────┐
           │       GEMM Accelerator      │
           │                             │
@@ -47,54 +48,24 @@ start ────►│ │ GEMM Controller │ │────► done
 │ └───────────────────────┘ │
 └─────────────────────────────┘
 
-### PE 结构
-输入: a[7:0], b[7:0] (INT8)
-输出: acc[31:0] (INT32)
-功能: acc = acc + a × b
-控制: en（使能）, load（清零）
+yaml
+复制代码
 
 ---
 
-## 📂 目录结构
+## 📚 学习笔记
 
-accel-mini/
-├── README.md
-├── docs/
-│ └── bugfix/ # Bug 修复记录（学习材料）
-├── rtl/ # Verilog 设计
-│ ├── pe.v # 处理单元
-│ └── pe_array.v # 8×8 阵列
-├── sim/ # 仿真测试
-│ ├── tb_pe.v
-│ └── tb_pe_array.v
-└── sw/ # 软件模型
-└── c_model/
+### Bug #1: PE 缺少 Enable 信号
 
----
+| 项目 | 内容 |
+|------|------|
+| 现象 | 测试结果是期望值的 2 倍 |
+| 原因 | GEMM 完成后 PE 继续累加 |
+| 修复 | 添加 `en` 信号控制更新 |
+| 文件 | `docs/bugfix/pe_enable_fix.diff` |
 
-## 🚀 快速开始
-
-### RTL 仿真（VCS）
-
-```bash
-cd sim
-
-# PE 测试
-vcs -full64 -sverilog -debug_access+all -timescale=1ns/1ps \
-    ../rtl/pe.v tb_pe.v -o simv && ./simv
-
-# PE Array 测试
-vcs -full64 -sverilog -debug_access+all -timescale=1ns/1ps \
-    ../rtl/pe.v ../rtl/pe_array.v tb_pe_array.v -o simv_array && ./simv_array
-📚 学习笔记
-Bug #1: PE 缺少Enable信号
-项目         内容
-现象
-测试结果是期望值的 2 倍
-原因         GEMM 完成后 PE 继续累加
-修复         添加 en 信号控制更新
-文件         docs/bugfix/pe_enable_fix.diff
-关键代码修改:
+**关键代码：**
+```verilog
 // 修复前：每个时钟都累加
 always @(posedge clk) begin
     acc_reg <= acc_reg + a * b;
@@ -106,16 +77,30 @@ always @(posedge clk) begin
         acc_reg <= acc_reg + a * b;
     end
 end
-🔧 开发环境
+Bug #2: FSM Testbench 时序问题
+项目内容
+现象测试检测不到 FSM 输出
+原因使用固定延迟而非等待信号变化
+修复用 while (!signal) 等待信号转换
+文件docs/bugfix/gemm_ctrl_timing_fix.diff
 
+关键修改：
+
+verilog
+复制代码
+// 错误方式：固定延迟
+#CLK_PERIOD;  // 可能错过信号变化
+
+// 正确方式：等待信号
+while (!pe_en) #CLK_PERIOD;  // 等到信号变化
+while (pe_en) begin
+    // 计数
+    #CLK_PERIOD;
+end
+🔧 开发环境
 Synopsys VCS T-2022.06
 
 Synopsys Verdi T-2022.06
 
 GCC / Python 3
 
-📝 Git 提交规范
-Add Step X.X: 简短描述
-
-- 详细说明 1
-- 详细说明 2
