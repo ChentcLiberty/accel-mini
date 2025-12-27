@@ -1,0 +1,67 @@
+diff --git a/rtl/pe.v b/rtl/pe.v
+index 7e62eab..f3fc437 100644
+--- a/rtl/pe.v
++++ b/rtl/pe.v
+@@ -1,12 +1,8 @@
+ /**
+- * Processing Element (PE)
++ * Processing Element (PE) - FIXED VERSION
+  * 
+  * 功能：INT8 MAC (Multiply-Accumulate)
+- * acc = acc + a * b
+- * 
+- * 参数：
+- * - DATA_WIDTH: 输入数据位宽 (8-bit)
+- * - ACC_WIDTH:  累加器位宽 (32-bit)
++ * 修复：添加 enable 信号控制累加
+  */
+ 
+ module pe #(
+@@ -15,34 +11,31 @@ module pe #(
+ )(
+     input  wire                     clk,
+     input  wire                     rst_n,
+-    input  wire                     load,      // 加载新数据并清零累加器
+-    input  wire signed [DATA_WIDTH-1:0] a,     // 输入 A (INT8)
+-    input  wire signed [DATA_WIDTH-1:0] b,     // 输入 B (INT8)
+-    output wire signed [ACC_WIDTH-1:0]  acc    // 累加器输出 (INT32)
++    input  wire                     en,        // 使能信号（修复点）
++    input  wire                     load,
++    input  wire signed [DATA_WIDTH-1:0] a,
++    input  wire signed [DATA_WIDTH-1:0] b,
++    output wire signed [ACC_WIDTH-1:0]  acc
+ );
+ 
+-    // 内部寄存器
+     reg signed [ACC_WIDTH-1:0] acc_reg;
+     
+-    // 组合逻辑：乘法
+     wire signed [2*DATA_WIDTH-1:0] mult;
+-    assign mult = a * b;  // INT8 × INT8 = INT16
++    assign mult = a * b;
+     
+-    // 时序逻辑：累加
+     always @(posedge clk or negedge rst_n) begin
+         if (!rst_n) begin
+             acc_reg <= {ACC_WIDTH{1'b0}};
+-        end else if (load) begin
+-            // 加载模式：清零并加载第一个乘积
+-            acc_reg <= {{(ACC_WIDTH-2*DATA_WIDTH){mult[2*DATA_WIDTH-1]}}, mult};
+-        end else begin
+-            // 累加模式：acc += a * b
+-            acc_reg <= acc_reg + {{(ACC_WIDTH-2*DATA_WIDTH){mult[2*DATA_WIDTH-1]}}, mult};
++        end else if (en) begin      // 只有 en=1 时才更新（修复点）
++            if (load) begin
++                acc_reg <= {{(ACC_WIDTH-2*DATA_WIDTH){mult[2*DATA_WIDTH-1]}}, mult};
++            end else begin
++                acc_reg <= acc_reg + {{(ACC_WIDTH-2*DATA_WIDTH){mult[2*DATA_WIDTH-1]}}, mult};
++            end
+         end
++        // en=0 时保持当前值，不再累加
+     end
+     
+-    // 输出
+     assign acc = acc_reg;
+ 
+ endmodule
+-
