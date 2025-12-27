@@ -30,3 +30,13 @@ sw/c_model/test_tile
 sw/c_model/test_gemm
 sw/c_model/gemm_cli
 sw/c_model/test_cycle
+
+# VCS 仿真产物
+sim/simv
+sim/simv.daidir/
+sim/csrc/
+sim/*.fsdb
+sim/*.vcd
+sim/*.log
+sim/verdiLog/
+sim/novas.*
