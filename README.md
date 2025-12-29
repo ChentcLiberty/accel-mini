@@ -1,129 +1,77 @@
-# Accel-Mini: 8×8 INT8 GEMM 加速器
+# GEMM 矩阵乘法加速器
 
-一个从零开始设计的 AI 加速器学习项目，实现 8×8 INT8 矩阵乘法硬件加速。
+基于 NanGate45 工艺的 4x4 GEMM 矩阵乘法硬件加速器。
 
-## 🎯 项目目标
+## 项目进度
 
-C[8×8] = A[8×8] × B[8×8] (INT8 输入，INT32 输出)
-## 📊 项目进度
+| 阶段 | 状态 | 说明 |
+|------|:----:|------|
+| RTL 设计 | ✅ | 6个模块完成 |
+| RTL 仿真 | ✅ | 所有模块验证通过 |
+| 逻辑综合 (DC) | ✅ | 门级网表生成 |
+| NDM 库准备 | ✅ | 135个标准单元 |
+| P&R Step1: 设计导入 | ✅ | 网表和约束导入成功 |
+| P&R Step2: Floorplan | 🔄 | 进行中 |
+| P&R Step3: Placement | ❌ | 待完成 |
+| P&R Step4: CTS | ❌ | 待完成 |
+| P&R Step5: Routing | ❌ | 待完成 |
+| 时序签核 (PT) | ❌ | 待完成 |
+| 物理验证 | ❌ | 待完成 |
 
-### Level 1: 算法理解 ✅ 完成
+## 目录结构
 
-| Step | 描述 | 状态 |
-|------|------|------|
-| 1.1 | Python 快速验证 | ✅ |
-| 1.2 | C 语言基础实现 | ✅ |
-| 1.3 | C/Python 对比验证 | ✅ |
-| 1.4 | Tile 分块实现 | ✅ |
-| 1.5 | 周期级仿真 | ✅ |
+accel-mini/
+├── rtl/ # RTL 源代码
+│ ├── pe.v # 处理单元
+│ ├── pe_array.v # 4x4 PE阵列
+│ ├── gemm_mem.v # 双端口SRAM
+│ ├── gemm_ctrl.v # 控制状态机
+│ ├── gemm_axi.v # AXI4接口
+│ └── gemm_top.v # 顶层模块
+├── sim/ # 仿真文件
+├── scripts/ # 综合和P&R脚本
+│ ├── syn_gemm.tcl # DC综合脚本
+│ ├── step1_create_ndm.tcl # NDM库创建
+│ ├── icc2_pnr_step1.tcl # ICC2 Step1脚本
+│ ├── work_icc2/ # NDM参考库
+│ └── gemm_axi.ndm/ # 设计库
+├── results/ # 综合结果
+│ ├── gemm_axi_netlist.v # 门级网表
+│ ├── gemm_axi.sdc # 时序约束
+│ └── syn_*.rpt # 综合报告
+└── reports/ # P&R报告
+└── icc2/ # ICC2报告
 
-### Level 2: RTL 设计 ⏳ 进行中
+## 设计规格
 
-| Step | 描述 | 状态 | 说明 |
-|------|------|------|------|
-| 2.1 | PE（处理单元） | ✅ | INT8 MAC，32-bit 累加 |
-| 2.2 | PE Array（8×8） | ✅ | 64 个 PE 并行计算 |
-| 2.3 | GEMM 控制器 | ✅ | FSM 状态机 |
-| 2.4 | 存储接口 | ⏸️ | - |
-| 2.5 | 顶层集成 | ⏸️ | - |
+- **工艺**: NanGate45 (45nm FreePDK)
+- **时钟频率**: 100 MHz (目标)
+- **矩阵大小**: 4x4
+- **数据位宽**: 8-bit
+- **接口**: AXI4-Lite
 
----
+## 综合结果
 
-## 🏗️ 架构设计
+- **网表实例数**: 6523
+- **端口数**: 108
+- **标准单元库**: 135 个单元
 
-markdown
-复制代码
-          ┌─────────────────────────────┐
-          │       GEMM Accelerator      │
-          │                             │
-A[8×8] ────►│ ┌───────────────────────┐ │
-│ │ PE Array (8×8) │ │────► C[8×8]
-B[8×8] ────►│ │ 64 个 MAC 单元 │ │
-│ └───────────────────────┘ │
-│ ▲ │
-│ en, load│ │
-│ ┌─────────┴─────────────┐ │
-start ────►│ │ GEMM Controller │ │────► done
-│ │ (FSM) │ │
-│ └───────────────────────┘ │
-└─────────────────────────────┘
+## 运行说明
 
-yaml
-复制代码
+### 1. NDM 库创建
+```bash
+cd scripts
+icc2_lm_shell -f step1_create_ndm.tcl
+2. ICC2 P&R Step1
+cd scripts
+icc2_shell -f icc2_pnr_step1.tcl
 
----
+工具版本
 
-## 📚 学习笔记
+Design Compiler: T-2022.03
 
-### Bug #1: PE 缺少 Enable 信号
+IC Compiler II: T-2022.03
 
-| 项目 | 内容 |
-|------|------|
-| 现象 | 测试结果是期望值的 2 倍 |
-| 原因 | GEMM 完成后 PE 继续累加 |
-| 修复 | 添加 `en` 信号控制更新 |
-| 文件 | `docs/bugfix/pe_enable_fix.diff` |
+Library Manager: T-2022.03
 
-**关键代码：**
-```verilog
-// 修复前：每个时钟都累加
-always @(posedge clk) begin
-    acc_reg <= acc_reg + a * b;
-end
-
-// 修复后：只有 en=1 时累加
-always @(posedge clk) begin
-    if (en) begin
-        acc_reg <= acc_reg + a * b;
-    end
-end
-Bug #2: FSM Testbench 时序问题
-项目内容
-现象测试检测不到 FSM 输出
-原因使用固定延迟而非等待信号变化
-修复用 while (!signal) 等待信号转换
-文件docs/bugfix/gemm_ctrl_timing_fix.diff
-
-关键修改：
-
-verilog
-复制代码
-// 错误方式：固定延迟
-#CLK_PERIOD;  // 可能错过信号变化
-
-// 正确方式：等待信号
-while (!pe_en) #CLK_PERIOD;  // 等到信号变化
-while (pe_en) begin
-    // 计数
-    #CLK_PERIOD;
-end
-🔧 开发环境
-Synopsys VCS T-2022.06
-
-Synopsys Verdi T-2022.06
-
-GCC / Python 3
-
-
----
-
-## ✅ Level 2: RTL 设计完成！
-
-| Step | 模块 | 状态 |
-|------|------|------|
-| 2.1 | PE 模块 | ✅ |
-| 2.2 | PE Array (8×8) | ✅ |
-| 2.3 | GEMM 控制器 | ✅ |
-| 2.4 | 存储接口 | ✅ |
-| 2.5 | 顶层集成 | ✅ |
-
-**成果：完整的 8×8 INT8 GEMM 加速器！**
-
----
-
-## 📈 下一步：Level 3 系统集成
-
-1. **AXI 接口封装** - 标准总线接口
-2. **DMA 控制器** - 高效数据传输
-3. **软件驱动** - Linux 驱动程序
-4. **系统测试** - 端到端验证
+PDK: NanGate45 FreePDK

@@ -1,0 +1,54 @@
+****************************************
+Report : reference
+Design : gemm_axi
+Version: T-2022.03
+Date   : Mon Dec 29 17:24:42 2025
+****************************************
+
+Attributes
+    b - black-box (unknown)
+    h - hierarchical
+    n - noncombinational
+    u - contains unmapped logic
+    E - extracted timing model
+    Q - Quick timing model (QTM)
+    s - synthetic operator
+
+
+Reference          Library       Unit Area   Count    Total Area   Attributes
+--------------------------------------------------------------------------------
+AND2_X1            nangate45_stdcells      1.06 30         31.92   
+AND4_X1            nangate45_stdcells      1.60  2          3.19   
+AOI211_X1          nangate45_stdcells      1.33  1          1.33   
+AOI21_X1           nangate45_stdcells      1.06 107       113.85   
+AOI221_X1          nangate45_stdcells      1.60  3          4.79   
+AOI222_X1          nangate45_stdcells      2.13  7         14.90   
+AOI22_X1           nangate45_stdcells      1.33 752      1000.16   
+BUF_X4             nangate45_stdcells      1.86  1          1.86   
+CLKBUF_X1          nangate45_stdcells      0.80 34         27.13   
+DFFR_X1            nangate45_stdcells      5.32 376      2000.32   
+FA_X1              nangate45_stdcells      4.26 378      1608.77   
+INV_X1             nangate45_stdcells      0.53 532       283.02   
+MUX2_X1            nangate45_stdcells      1.86 162       301.64   
+NAND2_X1           nangate45_stdcells      0.80 339       270.52   
+NAND3_X1           nangate45_stdcells      1.06 58         61.71   
+NAND4_X1           nangate45_stdcells      1.33 41         54.53   
+NOR2_X1            nangate45_stdcells      0.80 211       168.38   
+NOR2_X2            nangate45_stdcells      1.33  2          2.66   
+NOR2_X4            nangate45_stdcells      2.39  1          2.39   
+NOR3_X1            nangate45_stdcells      1.06 19         20.22   
+NOR3_X2            nangate45_stdcells      1.86  5          9.31   
+NOR3_X4            nangate45_stdcells      3.72  1          3.72   
+NOR4_X1            nangate45_stdcells      1.33  3          3.99   
+OAI211_X1          nangate45_stdcells      1.33  5          6.65   
+OAI21_X1           nangate45_stdcells      1.06 86         91.50   
+OAI221_X1          nangate45_stdcells      1.60  7         11.17   
+OAI222_X1          nangate45_stdcells      2.13  7         14.90   
+OAI22_X1           nangate45_stdcells      1.33 98        130.34   
+OR2_X1             nangate45_stdcells      1.06  6          6.38   
+XNOR2_X1           nangate45_stdcells      1.60 88        140.45   
+XOR2_X1            nangate45_stdcells      1.60 32         51.07   
+gemm_mem                           7445.07       1       7445.07   h
+--------------------------------------------------------------------------------
+Total 32 references                                     13887.86
+1
