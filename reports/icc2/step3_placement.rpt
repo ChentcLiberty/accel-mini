@@ -1,0 +1,29 @@
+****************************************
+Report : report_placement
+Design : gemm_axi
+Version: T-2022.03
+Date   : Mon Dec 29 18:51:58 2025
+****************************************
+  ==================
+  Note: Including violations of fixed cells or between fixed pairs of cells. 
+        To ignore violations of / between fixed cells, enable -ignore_fixed. 
+  ==================
+
+  Wire length report (all)
+  ==================
+  wire length in design gemm_axi_floorplan: 80067.680 microns.
+    number of nets with unassigned pins: 104
+  wire length in design gemm_axi_floorplan (see through blk pins): 80067.680 microns.
+
+  Physical hierarchy violations report
+  ====================================
+  Violations in design gemm_axi_floorplan:
+     0 cells have placement violation.
+
+  Voltage area violations report
+  ====================================
+  Voltage area placement violations in design gemm_axi_floorplan:
+     0 cells placed outside the voltage area which they belong to.
+
+Information: Default error view gemm_axi_floorplan_dpplace.err is created in GUI error browser. (DPP-054)
+1
