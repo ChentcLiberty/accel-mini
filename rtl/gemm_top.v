@@ -29,7 +29,7 @@ module gemm_top #(
     wire [3:0] k_idx;
     wire [15:0] c_addr;
     wire [ARRAY_SIZE*DATA_WIDTH-1:0] a_row, b_col;
-    wire [ARRAY_SIZE*ACC_WIDTH-1:0] c_out;
+    wire [ARRAY_SIZE*ARRAY_SIZE*ACC_WIDTH-1:0] c_out;
     
     // Memory 模块
     gemm_mem u_mem (

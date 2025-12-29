@@ -1,0 +1,46 @@
+ 
+****************************************
+Report : area
+Design : gemm_axi
+Version: T-2022.03-SP2
+Date   : Mon Dec 29 10:44:37 2025
+****************************************
+
+Information: Updating design information... (UID-85)
+Warning: Design 'gemm_axi' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+Library(s) Used:
+
+    NangateOpenCellLibrary (File: /home/jjt/install/pdk/nangate45/stdcells.db)
+
+Number of ports:                          572
+Number of nets:                          7506
+Number of cells:                         6527
+Number of combinational cells:           5058
+Number of sequential cells:              1464
+Number of macros/black boxes:               0
+Number of buf/inv:                        768
+Number of references:                      32
+
+Combinational area:               6967.604112
+Buf/Inv area:                      437.038002
+Noncombinational area:            6920.255886
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (Wire load has zero net area)
+
+Total cell area:                 13887.859998
+Total area:                 undefined
+
+Hierarchical area distribution
+------------------------------
+
+                                  Global cell area           Local cell area
+                                  -------------------  ---------------------------- 
+Hierarchical cell                 Absolute    Percent  Combi-     Noncombi-  Black-
+                                  Total       Total    national   national   boxes   Design
+--------------------------------  ----------  -------  ---------  ---------  ------  ---------
+gemm_axi                          13887.8600    100.0  4442.4660  2000.3201  0.0000  gemm_axi
+u_gemm/u_mem                       7445.0739     53.6  2525.1381  4919.9358  0.0000  gemm_mem
+--------------------------------  ----------  -------  ---------  ---------  ------  ---------
+Total                                                  6967.6041  6920.2559  0.0000
+
+1
