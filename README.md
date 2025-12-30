@@ -75,3 +75,25 @@ IC Compiler II: T-2022.03
 Library Manager: T-2022.03
 
 PDK: NanGate45 FreePDK
+
+## 项目进度更新 (2025-12-30)
+
+### 完成进度
+- ✅ Level 1: 算法验证 (100%)
+- 🔄 Level 2: RTL 设计 (71%)
+  - ✅ 2.1-2.5: 基础模块完成
+  - 🔄 2.6: 完整系统验证（进行中）
+  - ⏸️ 2.7: Waveform 分析
+- 🔄 Level 3: 系统集成 (60%)
+- ⏸️ Level 4-6: 待开始
+
+### P&R 状态（低优先级）
+- ✅ Step 1-3: 设计导入/Floorplan/Placement 已完成
+- ⏸️ Step 4-7: 暂时搁置
+
+### 当前任务
+- Level 2.6: 完善 tb_gemm_top.v 测试场景
+
+### 已知问题
+- ⚠️ 缺少时序约束文件 (.sdc)
+- ⚠️ 测试覆盖不足
