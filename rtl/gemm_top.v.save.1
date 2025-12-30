@@ -61,8 +61,15 @@ module gemm_top #(
         .k_idx(k_idx),
         .a_addr(), .b_addr(),
         .c_addr(c_addr),
+
+# 在 nano 中：
+# 1. 光标自动定位到第 64 行
+# 2. 按方向键移到行尾的 ) 后面
+# 3. 输入 , (逗号)
+# 4. 按 Ctrl+O 保存
+# 5. 按 Ctrl+X 退出
         .a_rd_en(), .b_rd_en(),
-        .c_wr_en(c_wr_en),
+        .c_wr_en(c_wr_en)
         .c_clr(c_clr)
     );
 

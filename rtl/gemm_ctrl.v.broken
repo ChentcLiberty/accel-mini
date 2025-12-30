@@ -1,5 +1,5 @@
 /**
- * GEMM Controller (Complete Fixed Version)
+ * GEMM Controller (Fixed: done signal holds until next start)
  */
 
 module gemm_ctrl #(
@@ -18,8 +18,7 @@ module gemm_ctrl #(
     output reg  [15:0] c_addr,
     output reg         a_rd_en,
     output reg         b_rd_en,
-    output reg         c_wr_en,
-    output reg         c_clr
+    output reg         c_wr_en
 );
 
     localparam S_IDLE    = 3'd0;
@@ -29,8 +28,17 @@ module gemm_ctrl #(
     localparam S_DONE    = 3'd4;
     
     reg [2:0] state, next_state;
-    reg [5:0] store_cnt;
+    reg [3:0] cnt;
     
+    // 状态寄存器
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n)
+            state <= S_IDLE;
+        else
+            state <= next_state;
+    end
+    
+    // 次态逻辑
     always @(*) begin
         next_state = state;
         case (state)
@@ -46,23 +54,17 @@ module gemm_ctrl #(
                     next_state = S_STORE;
             end
             S_STORE: begin
-                if (store_cnt == ARRAY_SIZE * ARRAY_SIZE - 1)
+                if (cnt == ARRAY_SIZE - 1)
                     next_state = S_DONE;
             end
             S_DONE: begin
-                if (start)
+                if (start)  // 等待下一次 start
                     next_state = S_LOAD;
             end
         endcase
     end
     
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n)
-            state <= S_IDLE;
-        else
-            state <= next_state;
-    end
-    
+    // 输出逻辑
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             done <= 1'b0;
@@ -70,61 +72,59 @@ module gemm_ctrl #(
             pe_en <= 1'b0;
             pe_load <= 1'b0;
             k_idx <= 0;
-            store_cnt <= 0;
+            cnt <= 0;
             a_addr <= 0;
             b_addr <= 0;
             c_addr <= 0;
             a_rd_en <= 1'b0;
             b_rd_en <= 1'b0;
             c_wr_en <= 1'b0;
-            c_clr <= 1'b0;
         end else begin
+            // 默认值
             pe_load <= 1'b0;
-            pe_en <= 1'b0;
-            c_clr <= 1'b0;
             c_wr_en <= 1'b0;
-            a_rd_en <= 1'b0;
-            b_rd_en <= 1'b0;
             
             case (state)
                 S_IDLE: begin
-                    done <= 1'b0;
+                    done <= 1'b0;  // 只有 IDLE 时清除 done
                     busy <= 1'b0;
+                    pe_en <= 1'b0;
                     k_idx <= 0;
-                    store_cnt <= 0;
+                    cnt <= 0;
                     if (start) begin
-                        c_clr <= 1'b1;
                         busy <= 1'b1;
                         pe_load <= 1'b1;
                     end
                 end
+                
                 S_LOAD: begin
                     pe_en <= 1'b1;
-                    pe_load <= 1'b1;
                     a_rd_en <= 1'b1;
                     b_rd_en <= 1'b1;
                 end
+                
                 S_COMPUTE: begin
                     pe_en <= 1'b1;
-                    a_rd_en <= 1'b1;
-                    b_rd_en <= 1'b1;
                     if (k_idx < ARRAY_SIZE - 1)
                         k_idx <= k_idx + 1;
                 end
+                
                 S_STORE: begin
+                    pe_en <= 1'b0;
                     c_wr_en <= 1'b1;
-                    c_addr <= {10'b0, store_cnt[5:0]};
-                    store_cnt <= store_cnt + 1;
+                    c_addr <= {12'b0, cnt};
+                    cnt <= cnt + 1;
                 end
+                
                 S_DONE: begin
                     busy <= 1'b0;
-                    done <= 1'b1;
+                    done <= 1'b1;  // done 保持为 1
                     if (start) begin
-                        c_clr <= 1'b1;
+                        done <= 1'b0;
                         busy <= 1'b1;
                         pe_load <= 1'b1;
                         k_idx <= 0;
-                        store_cnt <= 0;
+                        cnt <= 0;
                     end
                 end
             endcase

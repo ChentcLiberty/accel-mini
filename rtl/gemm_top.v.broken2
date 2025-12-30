@@ -26,7 +26,6 @@ module gemm_top #(
 );
 
     wire pe_en, pe_load, c_wr_en;
-    wire c_clr;
     wire [3:0] k_idx;
     wire [15:0] c_addr;
     wire [ARRAY_SIZE*DATA_WIDTH-1:0] a_row, b_col;
@@ -38,9 +37,8 @@ module gemm_top #(
         .a_wr_en(a_wr_en), .a_wr_addr(a_wr_addr), .a_wr_data(a_wr_data),
         .b_wr_en(b_wr_en), .b_wr_addr(b_wr_addr), .b_wr_data(b_wr_data),
         .c_wr_en(c_wr_en), 
-        .c_clr(c_clr),
         .c_wr_addr(c_addr[5:0]), 
-        .c_wr_data(c_out[c_addr[5:0]*ACC_WIDTH +: ACC_WIDTH]),
+        .c_wr_data(c_out[c_addr[2:0]*ACC_WIDTH +: ACC_WIDTH]),
         .a_rd_row(k_idx[2:0]), .a_rd_data(a_row),
         .b_rd_col(k_idx[2:0]), .b_rd_data(b_col),
         .c_rd_row(c_rd_row), .c_rd_data(c_rd_data)
@@ -62,8 +60,7 @@ module gemm_top #(
         .a_addr(), .b_addr(),
         .c_addr(c_addr),
         .a_rd_en(), .b_rd_en(),
-        .c_wr_en(c_wr_en),
-        .c_clr(c_clr)
+        .c_wr_en(c_wr_en)
     );
 
 endmodule

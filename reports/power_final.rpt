@@ -1,0 +1,73 @@
+****************************************
+Report : power
+        -significant_digits 2
+Design : gemm_axi
+Version: T-2022.03
+Date   : Tue Dec 30 14:26:30 2025
+****************************************
+Information: Activity for scenario default was cached, no propagation required. (POW-005)
+Mode: default
+Corner: default
+Scenario: default
+Voltage: 1.10
+Temperature: 25.00
+
+Voltage Unit         : 1V
+Capacitance Unit     : 1fF
+Time Unit            : 1ns
+Temperature Unit     : 1C
+Dynamic Power Unit   : 1nW
+Leakage Power Unit   : 1nW
+
+Switched supply net power scaling:
+scaling for leakage power
+
+Supply nets:
+VDD (power) probability 1.00 (default)
+VSS (ground) probability 1.00 (default)
+Warning: Power table extrapolation (extrapolation mode) for port CK on cell u_gemm/u_mem/a_mem_reg[0][7] for parameter Tinp. Lowest table value = 0.001174, highest table value = 0.198535, value = 0.000000 (POW-046)
+Warning: Power table extrapolation (extrapolation mode) for port QN on cell u_gemm/u_mem/a_mem_reg[0][7] for parameter Tinp. Lowest table value = 0.001174, highest table value = 0.198535, value = 0.000000 (POW-046)
+Warning: Power table extrapolation (extrapolation mode) for port QN on cell u_gemm/u_mem/a_mem_reg[0][7] for parameter Cout. Lowest table value = 0.000366, highest table value = 0.060272, value = 0.000000 (POW-046)
+Warning: Power table extrapolation (extrapolation mode) for port CK on cell u_gemm/u_mem/a_mem_reg[0][6] for parameter Tinp. Lowest table value = 0.001174, highest table value = 0.198535, value = 0.000000 (POW-046)
+Warning: Power table extrapolation (extrapolation mode) for port QN on cell u_gemm/u_mem/a_mem_reg[0][6] for parameter Tinp. Lowest table value = 0.001174, highest table value = 0.198535, value = 0.000000 (POW-046)
+Warning: Power table extrapolation (extrapolation mode) for port QN on cell u_gemm/u_mem/a_mem_reg[0][6] for parameter Cout. Lowest table value = 0.000366, highest table value = 0.060272, value = 0.000000 (POW-046)
+Warning: Power table extrapolation (extrapolation mode) for port CK on cell u_gemm/u_mem/a_mem_reg[0][5] for parameter Tinp. Lowest table value = 0.001174, highest table value = 0.198535, value = 0.000000 (POW-046)
+Warning: Power table extrapolation (extrapolation mode) for port QN on cell u_gemm/u_mem/a_mem_reg[0][5] for parameter Tinp. Lowest table value = 0.001174, highest table value = 0.198535, value = 0.000000 (POW-046)
+Warning: Power table extrapolation (extrapolation mode) for port QN on cell u_gemm/u_mem/a_mem_reg[0][5] for parameter Cout. Lowest table value = 0.000366, highest table value = 0.060272, value = 0.000000 (POW-046)
+Warning: Power table extrapolation (extrapolation mode) for port CK on cell u_gemm/u_mem/a_mem_reg[0][4] for parameter Tinp. Lowest table value = 0.001174, highest table value = 0.198535, value = 0.000000 (POW-046)
+Note - message 'POW-046' limit (10) exceeded. Remainder will be suppressed.
+Warning: Fall toggles on pin u_gemm/u_mem/a_mem_reg[0][0]/QN are impossible given input states; converted to rise toggles. (POW-069)
+Warning: Fall toggles on pin u_gemm/u_mem/a_mem_reg[8][7]/QN are impossible given input states; converted to rise toggles. (POW-069)
+Warning: Fall toggles on pin u_gemm/u_mem/a_mem_reg[8][6]/QN are impossible given input states; converted to rise toggles. (POW-069)
+Warning: Fall toggles on pin u_gemm/u_mem/a_mem_reg[8][5]/QN are impossible given input states; converted to rise toggles. (POW-069)
+Warning: Fall toggles on pin u_gemm/u_mem/a_mem_reg[8][4]/QN are impossible given input states; converted to rise toggles. (POW-069)
+Warning: Fall toggles on pin u_gemm/u_mem/a_mem_reg[8][3]/QN are impossible given input states; converted to rise toggles. (POW-069)
+Warning: Fall toggles on pin u_gemm/u_mem/a_mem_reg[8][2]/QN are impossible given input states; converted to rise toggles. (POW-069)
+Warning: Fall toggles on pin u_gemm/u_mem/a_mem_reg[8][1]/QN are impossible given input states; converted to rise toggles. (POW-069)
+Warning: Fall toggles on pin u_gemm/u_mem/a_mem_reg[8][0]/QN are impossible given input states; converted to rise toggles. (POW-069)
+Warning: Fall toggles on pin u_gemm/u_mem/a_mem_reg[16][7]/QN are impossible given input states; converted to rise toggles. (POW-069)
+Note - message 'POW-069' limit (10) exceeded. Remainder will be suppressed.
+
+  Cell Internal Power    = 5.54e+05 nW ( 94.9%)
+  Net Switching Power    = 3.01e+04 nW (  5.1%)
+Total Dynamic Power      = 5.84e+05 nW (100.0%)
+
+Cell Leakage Power       = 2.84e+05 nW
+
+
+  Attributes
+  ----------
+      u  -  User defined power group
+
+Power Group         Internal Power        Switching Power          Leakage Power            Total Power    (   %  )    Attrs
+-----------------------------------------------------------------------------------------------------------------------------
+io_pad                    0.00e+00               0.00e+00               0.00e+00               0.00e+00    (  0.0%)         
+memory                    0.00e+00               0.00e+00               0.00e+00               0.00e+00    (  0.0%)         
+black_box                 0.00e+00               0.00e+00               0.00e+00               0.00e+00    (  0.0%)         
+clock_network             0.00e+00               0.00e+00               0.00e+00               0.00e+00    (  0.0%)         
+register                  0.00e+00               0.00e+00               0.00e+00               0.00e+00    (  0.0%)         
+sequential                5.27e+05               1.69e+03               1.14e+05               6.43e+05    ( 74.1%)         
+combinational             2.73e+04               2.84e+04               1.69e+05               2.25e+05    ( 25.9%)         
+-----------------------------------------------------------------------------------------------------------------------------
+Total                     5.54e+05 nW            3.01e+04 nW            2.84e+05 nW            8.68e+05 nW
+1

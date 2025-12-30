@@ -70,7 +70,7 @@ module gemm_mem #(
     generate
         for (j = 0; j < ARRAY_SIZE; j = j + 1) begin : gen_a_read
             assign a_rd_data[(j+1)*DATA_WIDTH-1 : j*DATA_WIDTH] = 
-                   a_mem[j * ARRAY_SIZE + a_rd_row];
+                   a_mem[a_rd_row * ARRAY_SIZE + j];
         end
     endgenerate
     
@@ -78,7 +78,7 @@ module gemm_mem #(
     generate
         for (j = 0; j < ARRAY_SIZE; j = j + 1) begin : gen_b_read
             assign b_rd_data[(j+1)*DATA_WIDTH-1 : j*DATA_WIDTH] = 
-                   b_mem[b_rd_col * ARRAY_SIZE + j];
+                   b_mem[j * ARRAY_SIZE + b_rd_col];
         end
     endgenerate
     

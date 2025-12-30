@@ -31,6 +31,7 @@ module gemm_ctrl #(
     reg [2:0] state, next_state;
     reg [5:0] store_cnt;
     
+    // ===== State Transition (Combinational) =====
     always @(*) begin
         next_state = state;
         case (state)
@@ -38,17 +39,21 @@ module gemm_ctrl #(
                 if (start)
                     next_state = S_LOAD;
             end
+            
             S_LOAD: begin
                 next_state = S_COMPUTE;
             end
+            
             S_COMPUTE: begin
                 if (k_idx == ARRAY_SIZE - 1)
                     next_state = S_STORE;
             end
+            
             S_STORE: begin
                 if (store_cnt == ARRAY_SIZE * ARRAY_SIZE - 1)
                     next_state = S_DONE;
             end
+            
             S_DONE: begin
                 if (start)
                     next_state = S_LOAD;
@@ -56,6 +61,7 @@ module gemm_ctrl #(
         endcase
     end
     
+    // ===== State Register =====
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n)
             state <= S_IDLE;
@@ -63,6 +69,7 @@ module gemm_ctrl #(
             state <= next_state;
     end
     
+    // ===== Output Logic (Sequential) =====
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             done <= 1'b0;
@@ -79,6 +86,7 @@ module gemm_ctrl #(
             c_wr_en <= 1'b0;
             c_clr <= 1'b0;
         end else begin
+            // Default values
             pe_load <= 1'b0;
             pe_en <= 1'b0;
             c_clr <= 1'b0;
@@ -98,12 +106,14 @@ module gemm_ctrl #(
                         pe_load <= 1'b1;
                     end
                 end
+                
                 S_LOAD: begin
                     pe_en <= 1'b1;
                     pe_load <= 1'b1;
                     a_rd_en <= 1'b1;
                     b_rd_en <= 1'b1;
                 end
+                
                 S_COMPUTE: begin
                     pe_en <= 1'b1;
                     a_rd_en <= 1'b1;
@@ -111,11 +121,13 @@ module gemm_ctrl #(
                     if (k_idx < ARRAY_SIZE - 1)
                         k_idx <= k_idx + 1;
                 end
+                
                 S_STORE: begin
                     c_wr_en <= 1'b1;
                     c_addr <= {10'b0, store_cnt[5:0]};
                     store_cnt <= store_cnt + 1;
                 end
+                
                 S_DONE: begin
                     busy <= 1'b0;
                     done <= 1'b1;
@@ -127,8 +139,8 @@ module gemm_ctrl #(
                         store_cnt <= 0;
                     end
                 end
-            endcase
-        end
+           
+
     end
 
 endmodule

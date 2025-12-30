@@ -43,7 +43,7 @@ module pe_array #(
                     .acc(c_val)
                 );
                 
-                assign c_out[(i*ARRAY_SIZE+j)*ACC_WIDTH +: ACC_WIDTH] = c_val;
+                assign c_out[(i*ARRAY_SIZE+j+1)*ACC_WIDTH-1 -: ACC_WIDTH] = c_val;
                 
             end
         end

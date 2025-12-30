@@ -1,0 +1,66 @@
+Warning: Detected pins or ports without physical pin shapes. The first few such pins or ports are: aclk, bresp[1], bresp[0], rresp[1], rresp[0]. (DPPA-325)
+****************************************
+Report : qor
+Design : gemm_axi
+Version: T-2022.03
+Date   : Tue Dec 30 14:26:31 2025
+****************************************
+
+
+
+Cell Count
+----------------------------------------
+Hierarchical Cell Count:             12
+Hierarchical Port Count:           3440
+Leaf Cell Count:                   7325
+Buf/Inv Cell Count:                1233
+Buf Cell Count:                     108
+Inv Cell Count:                    1125
+CT Buf/Inv Cell Count:                0
+Combinational Cell Count:          5861
+   Single-bit Isolation Cell Count:                        0
+   Multi-bit Isolation Cell Count:                         0
+   Isolation Cell Banking Ratio:                           0.00%
+   Single-bit Level Shifter Cell Count:                    0
+   Multi-bit Level Shifter Cell Count:                     0
+   Level Shifter Cell Banking Ratio:                       0.00%
+   Single-bit ELS Cell Count:                              0
+   Multi-bit ELS Cell Count:                               0
+   ELS Cell Banking Ratio:                                 0.00%
+Sequential Cell Count:             1464
+   Integrated Clock-Gating Cell Count:                     0
+   Sequential Macro Cell Count:                            0
+   Single-bit Sequential Cell Count:                       1464
+   Multi-bit Sequential Cell Count:                        0
+   Sequential Cell Banking Ratio:                          0.00%
+   BitsPerflop:                                            1.00
+Macro Count:                          0
+----------------------------------------
+
+
+Area
+----------------------------------------
+Combinational Area:             7242.65
+Noncombinational Area:          6920.26
+Buf/Inv Area:                    693.73
+Total Buffer Area:                92.83
+Total Inverter Area:             600.89
+Macro/Black Box Area:              0.00
+Net Area:                             0
+Net XLength:                    6370.27
+Net YLength:                     850.47
+----------------------------------------
+Cell Area (netlist):                          14162.90
+Cell Area (netlist and physical only):        37590.06
+Net Length:                     7220.73
+
+
+Design Rules
+----------------------------------------
+Total Number of Nets:             11722
+Nets with Violations:                 0
+Max Trans Violations:                 0
+Max Cap Violations:                   0
+----------------------------------------
+
+1

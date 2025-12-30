@@ -1,5 +1,5 @@
 /**
- * GEMM Controller (Complete Fixed Version)
+ * GEMM Controller (Fixed: Full matrix computation)
  */
 
 module gemm_ctrl #(
@@ -29,7 +29,15 @@ module gemm_ctrl #(
     localparam S_DONE    = 3'd4;
     
     reg [2:0] state, next_state;
-    reg [5:0] store_cnt;
+    reg [2:0] row, col;  // 添加 row/col 计数器
+    reg [5:0] store_cnt; // 存储计数器（0-63）
+    
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n)
+            state <= S_IDLE;
+        else
+            state <= next_state;
+    end
     
     always @(*) begin
         next_state = state;
@@ -48,6 +56,8 @@ module gemm_ctrl #(
             S_STORE: begin
                 if (store_cnt == ARRAY_SIZE * ARRAY_SIZE - 1)
                     next_state = S_DONE;
+                else
+                    next_state = S_STORE;
             end
             S_DONE: begin
                 if (start)
@@ -57,19 +67,14 @@ module gemm_ctrl #(
     end
     
     always @(posedge clk or negedge rst_n) begin
-        if (!rst_n)
-            state <= S_IDLE;
-        else
-            state <= next_state;
-    end
-    
-    always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             done <= 1'b0;
             busy <= 1'b0;
             pe_en <= 1'b0;
             pe_load <= 1'b0;
             k_idx <= 0;
+            row <= 0;
+            col <= 0;
             store_cnt <= 0;
             a_addr <= 0;
             b_addr <= 0;
@@ -77,20 +82,18 @@ module gemm_ctrl #(
             a_rd_en <= 1'b0;
             b_rd_en <= 1'b0;
             c_wr_en <= 1'b0;
-            c_clr <= 1'b0;
         end else begin
             pe_load <= 1'b0;
-            pe_en <= 1'b0;
-            c_clr <= 1'b0;
             c_wr_en <= 1'b0;
-            a_rd_en <= 1'b0;
-            b_rd_en <= 1'b0;
             
             case (state)
                 S_IDLE: begin
                     done <= 1'b0;
                     busy <= 1'b0;
+                    pe_en <= 1'b0;
                     k_idx <= 0;
+                    row <= 0;
+                    col <= 0;
                     store_cnt <= 0;
                     if (start) begin
                         c_clr <= 1'b1;
@@ -98,32 +101,36 @@ module gemm_ctrl #(
                         pe_load <= 1'b1;
                     end
                 end
+                
                 S_LOAD: begin
                     pe_en <= 1'b1;
-                    pe_load <= 1'b1;
                     a_rd_en <= 1'b1;
                     b_rd_en <= 1'b1;
                 end
+                
                 S_COMPUTE: begin
                     pe_en <= 1'b1;
-                    a_rd_en <= 1'b1;
-                    b_rd_en <= 1'b1;
                     if (k_idx < ARRAY_SIZE - 1)
                         k_idx <= k_idx + 1;
                 end
+                
                 S_STORE: begin
+                    pe_en <= 1'b0;
                     c_wr_en <= 1'b1;
                     c_addr <= {10'b0, store_cnt[5:0]};
                     store_cnt <= store_cnt + 1;
                 end
+                
                 S_DONE: begin
                     busy <= 1'b0;
                     done <= 1'b1;
                     if (start) begin
-                        c_clr <= 1'b1;
+                        done <= 1'b0;
                         busy <= 1'b1;
                         pe_load <= 1'b1;
                         k_idx <= 0;
+                        row <= 0;
+                        col <= 0;
                         store_cnt <= 0;
                     end
                 end
