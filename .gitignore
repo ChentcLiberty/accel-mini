@@ -40,3 +40,35 @@ sim/*.vcd
 sim/*.log
 sim/verdiLog/
 sim/novas.*
+
+# P&R temporary files (ignored)
+scripts/*.svf
+scripts/crte_*.txt
+scripts/Synopsys_stack_trace_*.txt
+scripts/PreFrameCheck/
+scripts/work_dir/
+scripts/gemm_axi.ndm.backup_*/
+scripts/work_icc2/gemm_axi.ndm/
+scripts/work_icc2/*.ddc
+scripts/work_icc2/*.backup_*/
+scripts/work_icc2/nangate45_stdcells.ndm/p0
+scripts/work_icc2/nangate45_stdcells.ndm/pcat
+scripts/*.pvl
+scripts/*.syn
+scripts/fi
+scripts/icc2_output.txt
+scripts/lm_output.txt
+
+# Keep only essential P&R scripts
+!scripts/syn_gemm.tcl
+!scripts/icc2_pnr_step1.tcl
+!scripts/step1_create_ndm.tcl
+
+# Simulation temp files
+sim/*.backup
+sim/simv*
+sim/*.daidir/
+sim/csrc/
+sim/*.key
+sim/verdiLog/
+sim/novas*
